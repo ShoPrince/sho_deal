@@ -1,0 +1,11 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'>
+  <rect width='800' height='500' fill='#edf3f9'/>
+  <rect x='80' y='120' width='640' height='220' rx='28' fill='#2d4d7a'/>
+  <circle cx='210' cy='360' r='56' fill='#0f172a'/>
+  <circle cx='590' cy='360' r='56' fill='#0f172a'/>
+  <circle cx='210' cy='360' r='22' fill='#dfeaf9'/>
+  <circle cx='590' cy='360' r='22' fill='#dfeaf9'/>
+  <path d='M160 165h470l48 90H112l48-90Z' fill='#f7fbff' opacity='0.85'/>
+  <text x='400' y='245' text-anchor='middle' font-size='42' font-family='Arial, sans-serif' fill='#fff' font-weight='700'>Honda Civic</text>
+  <text x='400' y='290' text-anchor='middle' font-size='22' font-family='Arial, sans-serif' fill='#dfeeff'>2020</text>
+</svg>

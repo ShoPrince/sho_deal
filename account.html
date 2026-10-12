@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account | SHO-DEAL ENTERPRISE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem;max-width:420px}
+    label{display:block;font-weight:600;margin:.75rem 0 .25rem}
+    input{width:100%;padding:.6rem;border:1px solid var(--line);border-radius:6px;font:inherit}
+    .err{color:#b3261e;font-weight:600;min-height:1.5rem;margin:.75rem 0}
+    .hidden{display:none}
+    .tabs{display:flex;gap:.5rem;margin-bottom:.5rem}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">SHO-DEAL <span>ENTERPRISE</span></a>
+    <nav><a href="index.html">Cars</a><a href="account.html" id="signin">Sign in</a><a href="cart.html">Cart <b id="cart-count">0</b></a></nav>
+  </header>
+  <main>
+    <div class="panel">
+      <div class="tabs">
+        <button class="btn" id="tab-login" type="button">Log in</button>
+        <button class="btn ghost" id="tab-signup" type="button">Create account</button>
+      </div>
+      <form id="form">
+        <div id="name-row" class="hidden"><label for="full_name">Full name</label><input id="full_name" autocomplete="name"></div>
+        <label for="email">Email</label><input id="email" type="email" required autocomplete="email">
+        <label for="password">Password</label><input id="password" type="password" required minlength="8" autocomplete="current-password">
+        <div class="err" id="err"></div>
+        <button class="btn" type="submit" id="go">Log in</button>
+      </form>
+    </div>
+  </main>
+  <script src="shared.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    let mode = 'login';
+    // Only allow redirects to our own pages, e.g. "cart.html"
+    const nextParam = new URLSearchParams(location.search).get('next');
+    const next = /^[a-z-]+\.html$/.test(nextParam || '') ? nextParam : 'index.html';
+
+    function setMode(m) {
+      mode = m;
+      $('name-row').classList.toggle('hidden', m === 'login');
+      $('tab-login').className = 'btn' + (m === 'login' ? '' : ' ghost');
+      $('tab-signup').className = 'btn' + (m === 'signup' ? '' : ' ghost');
+      $('go').textContent = m === 'login' ? 'Log in' : 'Create account';
+      $('password').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+      $('err').textContent = '';
+    }
+    $('tab-login').onclick = () => setMode('login');
+    $('tab-signup').onclick = () => setMode('signup');
+
+    $('form').onsubmit = async e => {
+      e.preventDefault(); $('err').textContent = ''; $('go').disabled = true;
+      try {
+        const body = { email: $('email').value, password: $('password').value };
+        if (mode === 'signup') body.full_name = $('full_name').value;
+        const data = await userApi('/auth/' + mode, { method: 'POST', body: JSON.stringify(body) });
+        localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userName', data.user.full_name);
+        location.href = next;
+      } catch (err) { $('err').textContent = err.message; $('go').disabled = false; }
+    };
+  </script>
+</body>
+</html>

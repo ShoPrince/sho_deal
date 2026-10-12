@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | SHO-DEAL ENTERPRISE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:900px}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem}
+    label{display:block;font-weight:600;margin:.75rem 0 .25rem}
+    input[type=text],input[type=tel],textarea{width:100%;padding:.6rem;border:1px solid var(--line);border-radius:6px;font:inherit}
+    .pay{display:flex;gap:.6rem;align-items:flex-start;font-weight:400;border:1px solid var(--line);border-radius:6px;padding:.7rem;margin:.5rem 0;cursor:pointer}
+    .pay input{width:auto;margin-top:.3rem}
+    .row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--line)}
+    .err{color:#b3261e;font-weight:600;min-height:1.5rem;margin:.75rem 0}
+    @media (max-width:700px){.wrap{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">SHO-DEAL <span>ENTERPRISE</span></a>
+    <nav><a href="index.html">Cars</a><a href="#" id="signin">Sign in</a><a href="cart.html">Cart <b id="cart-count">0</b></a></nav>
+  </header>
+  <main>
+    <h2>Checkout</h2>
+    <div class="wrap">
+      <form class="panel" id="form">
+        <label for="address">Delivery address</label>
+        <textarea id="address" rows="3" required></textarea>
+        <label for="phone">Phone number</label>
+        <input id="phone" type="tel" required>
+        <label>Payment</label>
+        <label class="pay"><input type="radio" name="pay" value="card"><span><strong>Pay online by card</strong><br><span class="muted">Demo secure checkout</span></span></label>
+        <label class="pay"><input type="radio" name="pay" value="pay_on_delivery" checked><span><strong>Pay on delivery</strong><br><span class="muted">Pay when your order arrives</span></span></label>
+        <div class="err" id="err"></div>
+        <button class="btn" type="submit" id="place">Place order</button>
+      </form>
+      <div class="panel"><h3 style="margin-top:0">Your order</h3><div id="summary">Loading...</div></div>
+    </div>
+  </main>
+  <script src="shared.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const naira = n => '₦' + Number(n).toLocaleString('en-NG');
+    (async () => {
+      if (!userToken()) { location.href = 'account.html?next=checkout.html'; return; }
+      try {
+        const items = await userApi('/cart');
+        if (!items.length) { location.href = 'cart.html'; return; }
+        const total = items.reduce((s, i) => s + Number(i.price) * i.quantity, 0);
+        $('summary').innerHTML = items.map(i => `<div class="row"><span>${esc(i.name)} × ${i.quantity}</span><span>${naira(i.price * i.quantity)}</span></div>`).join('')
+          + `<div class="row"><strong>Total</strong><strong>${naira(total)}</strong></div>`;
+      } catch (e) { if (e.status === 401) location.href = 'account.html?next=checkout.html'; else $('summary').textContent = e.message; }
+    })();
+
+    $('form').onsubmit = async e => {
+      e.preventDefault(); $('err').textContent = ''; $('place').disabled = true; $('place').textContent = 'Placing order...';
+      try {
+        const data = await userApi('/checkout', { method: 'POST', body: JSON.stringify({
+          delivery_address: $('address').value, phone: $('phone').value,
+          payment_method: document.querySelector('input[name=pay]:checked').value }) });
+        location.href = data.payment_url || data.redirect;
+      } catch (err) { $('err').textContent = err.message; $('place').disabled = false; $('place').textContent = 'Place order'; }
+    };
+  </script>
+</body>
+</html>

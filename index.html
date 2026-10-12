@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SHO-DEAL ENTERPRISE | Cars &amp; Car Parts</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">SHO-DEAL <span>ENTERPRISE</span></a>
+    <nav><a href="index.html">Cars</a><a href="account.html" id="signin">Sign in</a><a href="cart.html">Cart <b id="cart-count">0</b></a></nav>
+  </header>
+  <main>
+    <h1>Quality cars and car parts</h1>
+    <div class="filters">
+      <button class="btn ghost on" data-cat="">All</button>
+      <button class="btn ghost" data-cat="car">Cars</button>
+      <button class="btn ghost" data-cat="part">Car parts</button>
+    </div>
+    <div id="msg" class="muted"></div>
+    <div class="grid" id="grid"></div>
+  </main>
+  <script src="shared.js"></script>
+  <script>
+    const naira = n => '₦' + Number(n).toLocaleString('en-NG');
+    const grid = document.getElementById('grid'), msg = document.getElementById('msg');
+
+    async function load(cat = '') {
+      msg.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/products' + (cat ? '?category=' + cat : ''));
+        const items = await res.json();
+        msg.textContent = items.length ? '' : 'Nothing here yet. Please check back soon.';
+        grid.innerHTML = items.map(p => `
+          <article class="card">
+            ${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">` : '<div class="noimg">No photo</div>'}
+            <div class="body">
+              <h3>${esc(p.name)}${p.year ? ' (' + esc(p.year) + ')' : ''}</h3>
+              <div class="price">${naira(p.price)}</div>
+              <div class="specs">${Object.entries(p.details || {}).map(([k, v]) => `<span>${esc(k)}: ${esc(v)}</span>`).join('')}</div>
+              <p class="muted">${esc(p.description || '')}</p>
+              <button class="btn" data-add="${p.id}">Add to cart</button>
+            </div>
+          </article>`).join('');
+      } catch { msg.textContent = 'Could not load products. Please refresh.'; }
+    }
+
+    document.querySelector('.filters').onclick = e => {
+      if (e.target.dataset.cat === undefined) return;
+      document.querySelectorAll('.filters .btn').forEach(b => b.classList.toggle('on', b === e.target));
+      load(e.target.dataset.cat);
+    };
+
+    grid.onclick = async e => {
+      const id = e.target.dataset.add;
+      if (!id) return;
+      if (!userToken()) { location.href = 'account.html?next=index.html'; return; }
+      e.target.disabled = true;
+      try {
+        await userApi('/cart', { method: 'POST', body: JSON.stringify({ product_id: id }) });
+        e.target.textContent = 'Added ✓';
+        refreshHeader();
+      } catch (err) {
+        if (err.status === 401) { localStorage.removeItem('userToken'); location.href = 'account.html?next=index.html'; }
+        else alert(err.message);
+      }
+      const b = e.target;
+      setTimeout(() => { b.disabled = false; b.textContent = 'Add to cart'; }, 1200);
+    };
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | SHO-DEAL ENTERPRISE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{background:linear-gradient(180deg,#f5f7f5 0%,#edf3ef 100%)}
+    main{max-width:1200px}
+    .panel{
+      background:rgba(255,255,255,.96); border:1px solid rgba(31,111,74,.12);
+      border-radius:16px; padding:1.5rem; margin:1.25rem auto 1.5rem;
+      box-shadow:0 12px 35px rgba(13,36,26,.08); max-width:760px
+    }
+    .login-panel{max-width:460px;margin-top:3rem}
+    .panel h2{margin-top:0;margin-bottom:1rem;font-size:1.75rem}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;background:#eaf4ee;color:var(--green-dark);font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    label{display:block;font-weight:700;margin:.8rem 0 .35rem;color:var(--ink)}
+    input,select,textarea{
+      width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:10px;font:inherit;
+      transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;background:#fff
+    }
+    input:focus,select:focus,textarea:focus{
+      outline:none;border-color:var(--green);box-shadow:0 0 0 4px rgba(31,111,74,.12)
+    }
+    textarea{min-height:120px;resize:vertical}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    #msg,#login-msg{margin:.75rem 0;font-weight:600}
+    #msg.success,#login-msg.success{color:var(--green-dark)}
+    #msg.error,#login-msg.error{color:#b3261e}
+    .list{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .list td,.list th{vertical-align:middle;padding:.8rem .9rem}
+    .list th{background:#f3f7f4;font-weight:700;color:var(--green-dark)}
+    .list tr:nth-child(even) td{background:#fafcfb}
+    .list button{margin-right:.4rem;padding:.45rem .75rem;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:600;color:var(--ink)}
+    .list button:hover{border-color:var(--green);color:var(--green-dark)}
+    .hidden{display:none}
+    #orders .muted{display:block;margin-top:.3rem}
+    @media (max-width:600px){.two{grid-template-columns:1fr}.panel{padding:1rem}.panel h2{font-size:1.45rem}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">SHO-DEAL <span>ADMIN</span></a>
+    <nav><a href="index.html">View website</a><a href="#" id="logout" class="hidden">Log out</a></nav>
+  </header>
+
+  <main>
+    <section id="login" class="panel login-panel">
+      <div class="panel-header">
+        <h2>Admin login</h2>
+        <span class="badge">Secure</span>
+      </div>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter admin password">
+      <p><button class="btn" id="login-btn">Log in</button></p>
+      <div id="login-msg" class="muted" aria-live="polite"></div>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="panel">
+        <div class="panel-header">
+          <h2 id="form-title">Add a new product</h2>
+          <span class="badge">Inventory</span>
+        </div>
+        <form id="product-form">
+          <input type="hidden" id="id">
+          <div class="two">
+            <div><label for="category">Type</label>
+              <select id="category"><option value="car">Car</option><option value="part">Car part</option></select></div>
+            <div><label for="name">Name</label><input id="name" required></div>
+          </div>
+          <div class="two">
+            <div><label for="year">Year</label><input id="year" type="number"></div>
+            <div><label for="price">Price (₦)</label><input id="price" type="number" required></div>
+          </div>
+          <label for="description">Description</label><textarea id="description" rows="3"></textarea>
+          <div class="two">
+            <div><label for="engine">Engine</label><input id="engine"></div>
+            <div><label for="mileage">Mileage</label><input id="mileage"></div>
+            <div><label for="transmission">Transmission</label><input id="transmission"></div>
+            <div><label for="fuel">Fuel</label><input id="fuel"></div>
+            <div><label for="color">Color</label><input id="color"></div>
+            <div><label for="condition">Condition</label><input id="condition"></div>
+          </div>
+          <label for="image">Photo (JPG, PNG or WEBP, max 5 MB)</label>
+          <input id="image" type="file" accept="image/jpeg,image/png,image/webp">
+          <div id="msg"></div>
+          <button type="submit" class="btn" id="save-btn">Save product</button>
+          <button type="button" class="btn hidden" id="cancel-btn" style="background:#5d6a63">Cancel edit</button>
+        </form>
+      </div>
+
+      <h2>Your products</h2>
+      <table class="list" id="list"></table>
+
+      <h2>Orders</h2>
+      <div style="overflow-x:auto"><table class="list" id="orders"></table></div>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>

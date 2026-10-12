@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order | SHO-DEAL ENTERPRISE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem;max-width:560px}
+    .row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--line)}
+    .err{color:#b3261e;font-weight:600}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">SHO-DEAL <span>ENTERPRISE</span></a>
+    <nav><a href="index.html">Cars</a><a href="#" id="signin">Sign in</a><a href="cart.html">Cart <b id="cart-count">0</b></a></nav>
+  </header>
+  <main><div class="panel" id="box">Confirming your order...</div></main>
+  <script src="shared.js"></script>
+  <script>
+    const naira = n => '₦' + Number(n).toLocaleString('en-NG');
+    (async () => {
+      const p = new URLSearchParams(location.search), box = document.getElementById('box');
+      try {
+        let id = p.get('order');
+        const ref = p.get('reference') || p.get('trxref');
+        if (ref) id = (await userApi('/checkout/verify', { method: 'POST', body: JSON.stringify({ reference: ref }) })).order_id;
+        const o = await userApi('/orders/' + id);
+        const pay = o.payment_method === 'card' ? 'Paid online by card' : 'Pay on delivery: ' + naira(o.total) + ' due when your order arrives';
+        box.innerHTML = `<h2 style="margin-top:0">Thank you! Your order is placed.</h2>
+          <p class="muted">Order number ${o.id}. ${esc(pay)}.</p>
+          ${o.items.map(i => `<div class="row"><span>${esc(i.name)} × ${i.quantity}</span><span>${naira(i.unit_price * i.quantity)}</span></div>`).join('')}
+          <div class="row"><strong>Total</strong><strong>${naira(o.total)}</strong></div>
+          <p>We will deliver to: ${esc(o.delivery_address)}</p>
+          <a class="btn" href="index.html">Continue shopping</a>`;
+        refreshHeader();
+      } catch (e) {
+        box.innerHTML = `<p class="err">${esc(e.message)}</p><a class="btn" href="cart.html">Back to cart</a>`;
+      }
+    })();
+  </script>
+</body>
+</html>

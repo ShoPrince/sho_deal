@@ -1,0 +1,42 @@
+:root{--green:#1f6f4a;--green-dark:#16553a;--ink:#1c2420;--muted:#5d6a63;--bg:#f5f7f5;--card:#fff;--line:#dfe5e1}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+a{color:var(--green)}
+main{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem}
+h1,h2,h3{line-height:1.2}
+.muted{color:var(--muted);font-size:.92rem}
+
+.site-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;background:var(--green-dark);color:#fff;padding:.9rem 1.25rem}
+.site-header a{color:#fff;text-decoration:none}
+.brand{font-weight:800;letter-spacing:.04em;font-size:1.15rem}
+.brand span{font-weight:400;opacity:.8}
+.site-header nav{display:flex;gap:1.25rem;align-items:center}
+.site-header nav a:hover{text-decoration:underline}
+#cart-count{background:#fff;color:var(--green-dark);border-radius:999px;padding:0 .5rem;font-size:.85rem}
+
+.btn{display:inline-block;background:var(--green);color:#fff;border:0;border-radius:6px;padding:.65rem 1.1rem;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--green-dark)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+.btn.ghost.on{background:var(--green);color:#fff}
+
+.filters{display:flex;gap:.5rem;margin:1rem 0 1.25rem;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.card img,.card .noimg{width:100%;height:180px;object-fit:cover;background:#e8ede9;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.card .body{padding:1rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
+.card h3{margin:0;font-size:1.05rem}
+.price{font-weight:800;color:var(--green-dark);font-size:1.15rem}
+.specs{display:flex;flex-wrap:wrap;gap:.3rem;margin:.25rem 0}
+.specs span{background:#eef3ef;border-radius:999px;padding:.1rem .6rem;font-size:.78rem}
+.card .btn{margin-top:auto}
+
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:.6rem;border-bottom:1px solid var(--line)}
+.cart-table{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.thumb{width:72px;height:54px;object-fit:cover;border-radius:6px}
+.qty{white-space:nowrap}
+.qty button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:1rem}
+.qty span{display:inline-block;min-width:1.8rem;text-align:center}
+button.link{background:none;border:0;color:#b3261e;cursor:pointer;font:inherit;text-decoration:underline}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;font-size:1.2rem;font-weight:700}

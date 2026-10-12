@@ -1,0 +1,9 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'>
+  <rect width='800' height='500' fill='#f3f4f6'/>
+  <rect x='140' y='110' width='520' height='260' rx='26' fill='#bfc7d7'/>
+  <circle cx='400' cy='240' r='120' fill='#8aa0b7'/>
+  <circle cx='400' cy='240' r='78' fill='#dfe7ef'/>
+  <circle cx='400' cy='240' r='22' fill='#4b5563'/>
+  <path d='M260 120h280v70H260z' fill='#65758a'/>
+  <text x='400' y='335' text-anchor='middle' font-size='32' font-family='Arial, sans-serif' fill='#1f2937' font-weight='700'>Brake Pad Set</text>
+</svg>
